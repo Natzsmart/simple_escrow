@@ -16,7 +16,7 @@ contract SimpleEscrowTest is Test {
         escrow = new SimpleEscrow{value: 1 ether}(payee, arbiter);
     }
 
-    function testInitialValues() public view{
+    function testInitialValues() public view {
         assertEq(address(escrow).balance, 1 ether);
         assertEq(escrow.payer(), payer);
         assertEq(escrow.payee(), payee);

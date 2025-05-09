@@ -21,7 +21,7 @@ contract SimpleEscrow {
         require(msg.sender == arbiter, "Only arbiter can approve");
         require(!isApproved, "Already approved");
         isApproved = true;
-        (bool sent, ) = payee.call{value: amount}("");
+        (bool sent,) = payee.call{value: amount}("");
         require(sent, "Transfer failed");
 
         emit Approved(msg.sender, amount, payee);
