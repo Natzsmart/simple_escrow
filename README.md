@@ -1,66 +1,115 @@
-## Foundry
+# 🔐 Simple Escrow Smart Contract
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+This project implements a simple escrow smart contract in Solidity using the [Foundry](https://book.getfoundry.sh/) framework. It supports unit testing, fuzz testing, and emits events for key actions.
 
-Foundry consists of:
+---
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+## 🚀 Overview
 
-## Documentation
+The contract enables a payer to deposit funds into escrow, with an arbiter having the authority to approve and release funds to the payee. This pattern is common in decentralized payment systems where trust between parties is minimal.
 
-https://book.getfoundry.sh/
+### ✨ Features
+- Only the **arbiter** can approve the transfer.
+- Funds are held securely in the contract until approval.
+- Emits an **`Approved` event** for on-chain transparency.
+- Tested with both **unit tests** and **fuzz tests** using Foundry.
 
-## Usage
+---
 
-### Build
+## 📂 Project Structure
 
-```shell
-$ forge build
+simple-escrow/
+├── lib/ # Dependencies (like forge-std)
+├── out/ # Build artifacts
+├── script/ # (optional) Deployment scripts
+├── src/
+│ └── SimpleEscrow.sol # Main contract
+├── test/
+│ └── SimpleEscrow.t.sol # Unit and fuzz tests
+├── foundry.toml # Foundry config file
+
+
+---
+
+## 🛠️ Setup Instructions
+
+### 1. Prerequisites
+Install Foundry (if not installed):
+
+```solidity
+curl -L https://foundry.paradigm.xyz | bash
+foundryup
+```
+### 2. Clone the Repo
+```solidity
+git clone https://github.com/YOUR_USERNAME/simple-escrow.git
+cd simple-escrow
 ```
 
-### Test
+### 3. Install Dependencies
+```solidity 
+forge install
+```
+---
 
-```shell
-$ forge test
+## ⚙️ Build & Test
+
+### Compile the contract
+```solidity
+forge build
 ```
 
-### Format
+### Run all tests (unit + fuzz)
+```solidity 
+forge test -vvv
+```
+---
 
-```shell
-$ forge fmt
+## ✅ Sample Test Output
+[PASS] testApproveEmitsEvent()
+[PASS] testApproveTransfersFunds()
+[PASS] testFuzz_OnlyArbiterCanApprove(address) (runs: 256)
+[PASS] testInitialValues()
+[PASS] testOnlyArbiterCanApprove()
+
+---
+
+## 📜 Smart Contract: SimpleEscrow.sol
+```solidity
+event Approved(address indexed arbiter, uint256 amount, address indexed payee);
+
+function approve() external {
+    require(msg.sender == arbiter, "Only arbiter can approve");
+    require(!isApproved, "Already approved");
+    isApproved = true;
+    (bool sent, ) = payee.call{value: amount}("");
+    require(sent, "Transfer failed");
+
+    emit Approved(msg.sender, amount, payee);
+}
 ```
 
-### Gas Snapshots
+---
 
-```shell
-$ forge snapshot
-```
+## 🔍 Testing Highlights
 
-### Anvil
+- `testInitialValues()` – Checks constructor values.
 
-```shell
-$ anvil
-```
+- `testOnlyArbiterCanApprove()` – Ensures access control.
 
-### Deploy
+- `testApproveTransfersFunds()` – Validates payment.
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
+- `testFuzz_OnlyArbiterCanApprove()` – Fuzz test against arbitrary callers.
 
-### Cast
+- `testApproveEmitsEvent()` – Verifies event emission.
 
-```shell
-$ cast <subcommand>
-```
+---
 
-### Help
+## 📄 License
+MIT License © 2025
 
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+---
+
+## 👤 Author
+SmartCodez
+[GitHub:](https://www.github.com/Natzsmart)
