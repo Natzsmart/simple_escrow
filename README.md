@@ -67,9 +67,13 @@ forge test -vvv
 
 ## ✅ Sample Test Output
 [PASS] testApproveEmitsEvent()
+
 [PASS] testApproveTransfersFunds()
+
 [PASS] testFuzz_OnlyArbiterCanApprove(address) (runs: 256)
+
 [PASS] testInitialValues()
+
 [PASS] testOnlyArbiterCanApprove()
 
 ---
